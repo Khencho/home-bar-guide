@@ -1,5 +1,5 @@
 ---
-import { marked } from 'marked';
+import { renderChapters } from '../../lib/markdown';
 import { getArticle } from '../../lib/store';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { SITE_TITLE } from '../../consts';
@@ -10,7 +10,7 @@ const { slug } = Astro.params;
 const post = await getArticle(slug);
 if (!post) return Astro.redirect('/');
 
-const html = marked.parse(post.body || '');
+const html = renderChapters(post.body || '');
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Article',

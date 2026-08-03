@@ -1,5 +1,5 @@
 ---
-import { marked } from 'marked';
+import { renderChapters } from '../../lib/markdown';
 import { getAllArticles } from '../../lib/store';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { SITE_TITLE, CATEGORIES } from '../../consts';
@@ -14,7 +14,7 @@ const posts = (await getAllArticles())
   .filter((p) => (p.category || 'Статьи') === current.title)
   .sort((a, b) => Number(b.pinned) - Number(a.pinned) || (a.pubDate < b.pubDate ? 1 : -1));
 
-const rendered = posts.map((p) => ({ ...p, html: marked.parse(p.body || '') }));
+const rendered = posts.map((p) => ({ ...p, html: renderChapters(p.body || '') }));
 ---
 
 <BaseLayout title={`${current.title} — ${SITE_TITLE}`}>

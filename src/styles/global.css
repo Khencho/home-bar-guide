@@ -233,3 +233,32 @@ body::after {
 .block-head h2 { margin: 0; font-size: 1.4rem; }
 .block-more { color: var(--accent); font-size: .9rem; text-decoration: none; white-space: nowrap; }
 .block-more:hover { color: var(--accent-2); }
+
+/* Login button in header */
+.login-btn {
+  background: var(--accent);
+  color: #15110b;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: .95rem;
+}
+.login-btn:hover { background: var(--accent-2); }
+
+/* Login modal */
+.modal { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; }
+.modal[hidden] { display: none; }
+.modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.6); }
+.modal-box {
+  position: relative; z-index: 1; background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 28px 26px; width: min(380px, 92vw); box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.modal-box h2 { margin: 0 0 16px; font-size: 1.3rem; }
+.modal-close { position: absolute; top: 10px; right: 14px; background: none; border: none; color: var(--muted); font-size: 1.5rem; cursor: pointer; line-height: 1; }
+.login-form { display: flex; flex-direction: column; gap: 14px; }
+.login-form label { font-weight: 600; display: block; }
+.login-form input { width: 100%; padding: 10px; margin-top: 6px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); }
+.login-form button { padding: 11px; border: none; border-radius: 8px; background: var(--accent); color: #15110b; font-weight: 700; cursor: pointer; }
+.login-form button:hover { background: var(--accent-2); }

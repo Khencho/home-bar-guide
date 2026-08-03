@@ -46,6 +46,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
         <nav>
           <a href="/">Блог</a>
           <a href="/about/">О проекте</a>
+          <button type="button" id="open-login" class="login-btn">Войти</button>
         </nav>
       </div>
     </header>
@@ -57,5 +58,33 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
         <p>© {new Date().getFullYear()} {SITE_TITLE}. Материалы носят информационный характер. Соблюдайте законодательство о продаже алкоголя.</p>
       </div>
     </footer>
+
+    <div id="login-modal" class="modal" hidden>
+      <div class="modal-backdrop" id="login-backdrop"></div>
+      <div class="modal-box">
+        <button type="button" id="login-close" class="modal-close" aria-label="Закрыть">×</button>
+        <h2>Вход в редактор</h2>
+        <form method="post" action="/api/login" class="login-form">
+          <label>Логин<br><input type="text" name="username" required autocomplete="username" /></label>
+          <label>Пароль<br><input type="password" name="password" required autocomplete="current-password" /></label>
+          <button type="submit">Войти</button>
+        </form>
+      </div>
+    </div>
+
+    <script is:inline>
+      (function () {
+        var modal = document.getElementById('login-modal');
+        var openBtn = document.getElementById('open-login');
+        var closeBtn = document.getElementById('login-close');
+        var backdrop = document.getElementById('login-backdrop');
+        function show() { if (modal) modal.hidden = false; }
+        function hide() { if (modal) modal.hidden = true; }
+        if (openBtn) openBtn.addEventListener('click', show);
+        if (closeBtn) closeBtn.addEventListener('click', hide);
+        if (backdrop) backdrop.addEventListener('click', hide);
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') hide(); });
+      })();
+    </script>
   </body>
 </html>
