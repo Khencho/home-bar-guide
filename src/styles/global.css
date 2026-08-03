@@ -202,7 +202,7 @@ body::after {
    soviet-pivnaya-1972.jpg / kustodiev-moscow-tavern.jpg / night-tavern-kudryashev.jpg (Wikimedia, запас) */
 .credits { color: #5b6270; font-size: .78rem; margin-top: 6px; }
 
-/* Category tiles on home (square image blocks, name only) */
+/* Category tiles on home (solid colour blocks, name only) */
 .cat-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -213,22 +213,18 @@ body::after {
   position: relative;
   aspect-ratio: 1 / 1;
   border-radius: var(--radius);
-  background-size: cover;
-  background-position: center;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
   border: 1px solid var(--border);
+  background: linear-gradient(160deg, var(--surface-2), var(--surface));
   text-decoration: none;
+  transition: border-color .2s ease, transform .15s ease;
 }
-.cat-tile::before {
-  content: "";
-  position: absolute; inset: 0;
-  background: linear-gradient(180deg, rgba(15,17,21,0.15) 0%, rgba(15,17,21,0.72) 100%);
-  transition: background .2s ease;
-}
-.cat-tile:hover::before {
-  background: linear-gradient(180deg, rgba(224,164,88,0.12) 0%, rgba(15,17,21,0.80) 100%);
+.cat-tile:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
 }
 .cat-name {
   position: relative;
@@ -238,8 +234,7 @@ body::after {
   padding: 14px 8px;
   font-weight: 800;
   font-size: 1.15rem;
-  color: #fff;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+  color: var(--text);
   letter-spacing: .3px;
 }
 
