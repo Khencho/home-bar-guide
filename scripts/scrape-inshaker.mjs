@@ -42,17 +42,62 @@ const DICT = {
   'red wine': 'красное вино', 'coffee liqueur': 'кофейный ликёр', 'amaretto': 'амаретто',
   'grenadine': 'гренадин', 'mint leaves': 'листья мяты', 'cointreau': 'куантро',
   'blue curacao': 'блю кюрасао', 'passion fruit': 'маракуйя', 'coconut cream': 'кокосовый крем',
-  'cream': 'сливки', 'champagne': 'шампанское', 'sugar syrup': 'сахарный сироп'
+  'cream': 'сливки', 'champagne': 'шампанское', 'sugar syrup': 'сахарный сироп',
+  'bitters': 'биттер', 'tea flower': 'чайный цветок', 'tea flowers': 'чайные цветы', 'oolong': 'улун',
+  'homemade oolong gin': 'домашний джин улун', 'grilled lemon juice': 'жареный сок лимона',
+  'dried tea flowers': 'сушёные чайные цветы', 'lemon bitters': 'лимонный биттер',
+  'piece': 'кусок', 'pieces': 'кусков'
 };
 
 function translate(rest) {
   let r = rest.toLowerCase().trim();
   if (DICT[r]) return DICT[r];
-  // частичные совпадения
   for (const [en, ru] of Object.entries(DICT)) {
     if (r.includes(en)) return rest.toLowerCase().replace(en, ru);
   }
   return rest;
+}
+
+const METHOD_DICT = {
+  'pour': 'Налей', 'fill': 'Наполни', 'shake': 'Встряхни', 'strain': 'Процеди',
+  'stir': 'Размешай', 'add': 'Добавь', 'top': 'Долей', 'garnish': 'Укрась',
+  'serve': 'Подай', 'rim': 'Натри', 'use': 'Используй', 'fine strain': 'Тонко процеди',
+  'double strain': 'Дабл-стрэйн', 'chill': 'Охлади', 'crush': 'Раздроби', 'muddle': 'Разомни',
+  'blend': 'Взбей в блендере', 'mix': 'Смешай', 'into a shaker': 'в шейкер',
+  'into a glass': 'в бокал', 'into the glass': 'в бокал', 'with ice': 'со льдом',
+  'with ice cubes': 'с кубиками льда', 'ice cubes': 'кубики льда', 'the shaker': 'шейкер',
+  'a rocks glass': 'рокс', 'a cocktail glass': 'коктейльный бокал',
+  'a chilled cocktail glass': 'охлаждённый коктейльный бокал', 'a champagne saucer': 'бокал для шампанского',
+  'a highball glass': 'хайбол', 'a wine glass': 'винный бокал', 'and': 'и', 'of': '',
+  'oz': 'унций', 'piece': 'кусок', 'dash': 'дэш', 'dashes': 'дэш', 'slice': 'долька',
+  'twist': 'спираль цедры', 'zest': 'цедра', 'sprig': 'веточка', 'leaf': 'лист', 'leaves': 'листья',
+  'flambée': 'опали', 'torch': 'горелка', 'oils': 'масла', 'over': 'над', 'sides': 'края',
+  'then': 'затем', 'finally': 'в конце', 'gently': 'аккуратно', 'slowly': 'медленно',
+  'with': 'с', 'into': 'в', 'es': '', 'a': '', 'an': '', 'finely': 'тонко', 'double': 'дабл',
+  'rocks': 'рокс', 'chilled': 'охлаждённый', 'fresh': 'свежий', 'grilled': 'жареный',
+  'dried': 'сушёный', 'homemade': 'домашний', 'lemon': 'лимонный', 'lime': 'лаймовый'
+};
+
+function translateMethod(text) {
+  let t = text;
+  // убираем дозировки (они есть в списке ингредиентов)
+  t = t.replace(/\d+(\.\d+)?\s*oz/gi, '');
+  t = t.replace(/\d+(\.\d+)?\s*(ml|cl|tsp|tbsp|dash|dashes|piece|pieces|cup|cups)/gi, '');
+  // заменяем ингредиенты на «ингредиенты» (они уже перечислены выше)
+  for (const [en] of Object.entries(DICT)) {
+    const re = new RegExp('\\b' + en.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'gi');
+    t = t.replace(re, 'ингредиенты');
+  }
+  t = t.replace(/\bingredients/gi, 'ингредиенты');
+  // ключевые слова метода
+  for (const [en, ru] of Object.entries(METHOD_DICT)) {
+    const re = new RegExp('\\b' + en.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'gi');
+    t = t.replace(re, ru);
+  }
+  // чистим лишнее
+  t = t.replace(/\s+/g, ' ').replace(/\.\s*\./g, '.').replace(/\s+и\s+/g, ' и ').trim();
+  t = t.charAt(0).toUpperCase() + t.slice(1);
+  return t;
 }
 
 async function getCocktail(slug) {
@@ -89,7 +134,7 @@ async function getCocktail(slug) {
     out.push(...c.ingredients);
     if (c.steps.length) {
       out.push('');
-      out.push('**Метод:** ' + c.steps.join(' ').replace(/\n/g, ' ').slice(0, 300));
+      out.push(`**Метод:** ` + translateMethod(c.steps.join(' ')).slice(0, 400));
     }
     out.push('');
     if (n % 10 === 0) console.error(`  ${n} done`);
