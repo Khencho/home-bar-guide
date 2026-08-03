@@ -3,7 +3,7 @@ backend:
   repo: Khencho/home-bar-guide
   branch: main
   base_url: https://the-forgotten-bartender.pages.dev
-  auth_endpoint: https://the-forgotten-bartender.pages.dev/api/auth
+  auth_endpoint: https://decap-cms-oauth.glitch.me
 
 # Папка с изображениями (необязательно, пока не используем)
 media_folder: "public/backgrounds"
