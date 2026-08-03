@@ -43,6 +43,16 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <header class="site-header">
       <div class="container header-inner">
         <a href="/" class="logo">{SITE_TITLE}</a>
+        <div class="search-box">
+          <input
+            type="search"
+            id="site-search"
+            placeholder="Поиск по сайту…"
+            autocomplete="off"
+            aria-label="Поиск"
+          />
+          <div id="search-results" class="search-results" hidden></div>
+        </div>
         <nav>
           <a href="/">Блог</a>
           <a href="/about/">О проекте</a>
@@ -84,6 +94,48 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
         if (closeBtn) closeBtn.addEventListener('click', hide);
         if (backdrop) backdrop.addEventListener('click', hide);
         document.addEventListener('keydown', function (e) { if (e.key === 'Escape') hide(); });
+      })();
+    </script>
+
+    <script>
+      import { search } from '../lib/search';
+      (function () {
+        var input = document.getElementById('site-search');
+        var box = document.getElementById('search-results');
+        if (!input || !box) return;
+        var timer;
+        function render(q) {
+          var res = search(q);
+          if (!q || q.trim().length < 2) { box.hidden = true; box.innerHTML = ''; return; }
+          if (res.length === 0) {
+            box.innerHTML = '<div class="search-empty">Ничего не найдено</div>';
+            box.hidden = false;
+            return;
+          }
+          box.innerHTML = res.map(function (r) {
+            return '<a class="search-item" href="/blog/' + r.slug + '">' +
+              '<span class="search-cat">' + r.category + '</span>' +
+              '<span class="search-title">' + r.title + '</span>' +
+              '<span class="search-snippet">' + r.snippet + '</span>' +
+              '</a>';
+          }).join('');
+          box.hidden = false;
+        }
+        input.addEventListener('input', function () {
+          clearTimeout(timer);
+          var v = input.value;
+          timer = setTimeout(function () { render(v); }, 120);
+        });
+        input.addEventListener('focus', function () { if (input.value.trim().length >= 2) render(input.value); });
+        document.addEventListener('click', function (e) {
+          if (!e.target.closest('.search-box')) { box.hidden = true; }
+        });
+        input.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') {
+            var first = box.querySelector('a.search-item');
+            if (first) window.location.href = first.getAttribute('href');
+          }
+        });
       })();
     </script>
   </body>
