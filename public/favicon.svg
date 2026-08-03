@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" rx="12" fill="#1a1410"/>
+  <g fill="none" stroke="#d9a441" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+    <!-- коктейльная банка -->
+    <path d="M20 18 L44 18 L39 44 L25 44 Z"/>
+    <path d="M18 18 L46 18"/>
+    <path d="M32 44 L32 56"/>
+    <path d="M24 56 L40 56"/>
+    <!-- оливка на шпажке -->
+    <circle cx="35" cy="26" r="3.4" fill="#d9a441" stroke="none"/>
+    <path d="M35 26 L49 14"/>
+  </g>
+</svg>

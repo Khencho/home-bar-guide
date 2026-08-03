@@ -1,0 +1,27 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE_TITLE, CATEGORIES } from '../consts';
+
+const posts = await getCollection('blog');
+const countByCat = (title) => posts.filter((p) => (p.data.category || 'Статьи') === title).length;
+---
+
+<BaseLayout title={SITE_TITLE}>
+  <section class="hero">
+    <div class="container">
+      <h1>{SITE_TITLE}</h1>
+      <p class="post-meta">Гид по домашнему бару и напиткам: рецепты коктейлей, настоек и безалкогольных напитков, чай и кофе по-домашнему.</p>
+    </div>
+  </section>
+
+  <section class="container">
+    <div class="cat-grid">
+      {CATEGORIES.map((cat) => (
+        <a class="cat-tile" href={`/category/${cat.slug}`} style={`background-image:url('${cat.image}')`}>
+          <span class="cat-name">{cat.title}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

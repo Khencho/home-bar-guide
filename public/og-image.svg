@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#241a12"/>
+      <stop offset="1" stop-color="#0e0a07"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <!-- банка -->
+  <g fill="none" stroke="#d9a441" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M500 150 L700 150 L675 430 L525 430 Z"/>
+    <path d="M480 150 L720 150"/>
+    <path d="M600 430 L600 540"/>
+    <path d="M540 540 L660 540"/>
+    <circle cx="630" cy="220" r="14" fill="#d9a441" stroke="none"/>
+    <path d="M630 220 L760 100"/>
+  </g>
+  <text x="600" y="500" fill="#f3e9d8" font-family="Georgia, 'Times New Roman', serif" font-size="84" font-weight="bold" text-anchor="middle">The Forgotten Bartender</text>
+  <text x="600" y="560" fill="#d9a441" font-family="Georgia, serif" font-size="34" text-anchor="middle">Гид по домашнему бару и напиткам</text>
+</svg>

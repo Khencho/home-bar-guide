@@ -1,0 +1,13 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+const { post } = Astro.props;
+---
+<a class="card" href={`/blog/${post.slug}/`}>
+  <h3>{post.data.title}</h3>
+  <p class="card-desc">{post.data.description}</p>
+  <p class="card-meta">{post.data.pubDate.toISOString().slice(0, 10)} · {post.data.tags.join(', ')}</p>
+</a>

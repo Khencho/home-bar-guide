@@ -1,0 +1,43 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE_TITLE, CATEGORIES } from '../../consts';
+
+export async function getStaticPaths() {
+  return CATEGORIES.map((cat) => ({ params: { cat: cat.slug }, props: { cat } }));
+}
+
+const { cat } = Astro.props;
+const posts = (await getCollection('blog'))
+  .filter((p) => (p.data.category || 'Статьи') === cat.title)
+  .sort((a, b) => Number(b.data.pinned) - Number(a.data.pinned) || b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const rendered = await Promise.all(
+  posts.map(async (p) => ({ data: p.data, slug: p.slug, Content: (await p.render()).Content }))
+);
+---
+
+<BaseLayout title={`${cat.title} — ${SITE_TITLE}`}>
+  <section class="cat-banner" style={`background-image:url('${cat.image}')`}>
+    <div class="container">
+      <h1>{cat.title}</h1>
+      <p class="post-meta">Материалы в разделе «{cat.title}»</p>
+    </div>
+  </section>
+
+  <section class="container block">
+    {rendered.length === 0 ? (
+      <p>Скоро здесь появятся материалы.</p>
+    ) : (
+      rendered.map(({ data, slug, Content }) => (
+        <article class="cat-article">
+          <h2 id={slug}>{data.title}</h2>
+          {data.description && <p class="post-meta">{data.description}</p>}
+          <Content />
+          <hr class="cat-sep" />
+        </article>
+      ))
+    )}
+    <p style="margin-top:28px"><a href="/">← На главную</a></p>
+  </section>
+</BaseLayout>

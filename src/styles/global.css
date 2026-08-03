@@ -1,0 +1,235 @@
+:root {
+  --bg: #0f1115;
+  --surface: #171a21;
+  --surface-2: #1e222b;
+  --text: #e7e9ee;
+  --muted: #9aa3b2;
+  --accent: #e0a458;
+  --accent-2: #f2c879;
+  --border: #2a2f3a;
+  --max: 860px;
+  --radius: 14px;
+  font-synthesis: none;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container { max-width: var(--max); margin: 0 auto; padding: 0 20px; }
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { color: var(--accent-2); }
+
+/* Header */
+.site-header {
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  position: sticky; top: 0; z-index: 10;
+  backdrop-filter: blur(8px);
+}
+.header-inner { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+.logo { font-weight: 800; font-size: 1.2rem; color: var(--accent); letter-spacing: .5px; }
+.site-header nav a { color: var(--muted); margin-left: 18px; font-size: .95rem; }
+.site-header nav a:hover { color: var(--text); }
+
+/* Hero */
+.hero { padding: 48px 0 28px; border-bottom: 1px solid var(--border); margin-bottom: 28px; }
+.hero h1 { font-size: 2rem; margin: 0 0 12px; line-height: 1.2; }
+.hero p { color: var(--muted); font-size: 1.05rem; max-width: 620px; margin: 0; }
+
+.section-title { font-size: 1.3rem; margin: 8px 0 18px; }
+
+/* Cards */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; }
+.card {
+  display: block; background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 18px; transition: border-color .15s, transform .15s;
+}
+.card:hover { border-color: var(--accent); transform: translateY(-2px); color: var(--text); }
+.card h3 { margin: 0 0 8px; font-size: 1.1rem; color: var(--text); }
+.card-desc { color: var(--muted); font-size: .92rem; margin: 0 0 10px; }
+.card-meta { color: #6b7280; font-size: .8rem; margin: 0; }
+
+/* Article */
+.post { padding: 24px 0 40px; }
+.post h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 10px; }
+.post-meta { color: var(--muted); font-size: .9rem; margin: 0 0 24px; }
+.prose { font-size: 1.05rem; counter-reset: chapter; }
+.prose h2 { font-size: 1.5rem; margin: 32px 0 12px; }
+.prose h3 { font-size: 1.2rem; margin: 24px 0 8px; }
+.prose ul, .prose ol { padding-left: 22px; }
+.prose li { margin: 6px 0; }
+.prose img { max-width: 100%; border-radius: 10px; }
+.prose blockquote { border-left: 3px solid var(--accent); margin: 18px 0; padding: 6px 16px; color: var(--muted); background: var(--surface); border-radius: 0 8px 8px 0; }
+.aff-note { margin-top: 28px; padding: 14px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; font-size: .9rem; color: var(--muted); }
+
+/* Collapsible chapters: each H2 section becomes a <details> accordion */
+.chapter {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin: 18px 0;
+  background: var(--surface);
+  overflow: hidden;
+  counter-increment: chapter;
+}
+.chapter > summary.chapter-title {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text);
+  user-select: none;
+  transition: background .15s ease, color .15s ease;
+}
+.chapter > summary.chapter-title::-webkit-details-marker { display: none; }
+.chapter > summary.chapter-title:hover { background: var(--surface-2); color: var(--accent); }
+.chapter[open] > summary.chapter-title { border-bottom: 1px solid var(--border); }
+.chapter > summary.chapter-title::before {
+  content: counter(chapter) ". ";
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.chapter > summary.chapter-title::after {
+  content: "+";
+  flex: none;
+  margin-left: auto;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--accent);
+  transition: transform .2s ease;
+}
+.chapter[open] > summary.chapter-title::after { content: "\2212"; }
+.chapter > :not(summary) { padding-left: 18px; padding-right: 18px; }
+.chapter > :not(summary):first-of-type { padding-top: 16px; }
+.chapter > :last-child:not(summary) { padding-bottom: 18px; }
+.chapter > :not(summary) img { padding-left: 0; padding-right: 0; }
+
+/* Footer */
+.site-footer { border-top: 1px solid var(--border); margin-top: 40px; padding: 24px 0; }
+.site-footer p { color: var(--muted); font-size: .85rem; margin: 0; }
+
+@media (max-width: 560px) {
+  .hero h1 { font-size: 1.6rem; }
+  .post h1 { font-size: 1.6rem; }
+}
+
+/* Partner product card */
+.partner-card {
+  display: block;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin: 18px 0;
+  background: var(--surface-2);
+}
+.partner-card .pc-title { font-weight: 700; color: var(--text); margin: 0 0 4px; }
+.partner-card .pc-meta { color: var(--muted); font-size: .9rem; margin: 0 0 10px; }
+.partner-card .pc-cta {
+  display: inline-block; background: var(--accent); color: #1a1206;
+  font-weight: 700; padding: 6px 14px; border-radius: 8px; font-size: .9rem;
+}
+.partner-card .pc-cta:hover { background: var(--accent-2); color: #1a1206; }
+
+/* Vintage Soviet background (fixed, B&W, dimmed for readability) */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background: url('/backgrounds/user-bar-interior.jpg') center center / cover no-repeat;
+  filter: grayscale(1) brightness(0.40) contrast(1.05);
+}
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(125% 125% at 50% 0%, rgba(15,17,21,0.78) 0%, rgba(15,17,21,0.92) 100%);
+}
+/* Сменить фон: поменяй url выше. Варианты в /backgrounds/:
+   user-bar-interior.jpg (винтажный бар, фото пользователя) — текущий
+   user-ryumochnaya.jpg (вывеска «РЮМОЧНАЯ», фото пользователя)
+   soviet-pivnaya-1972.jpg / kustodiev-moscow-tavern.jpg / night-tavern-kudryashev.jpg (Wikimedia, запас) */
+.credits { color: #5b6270; font-size: .78rem; margin-top: 6px; }
+
+/* Category tiles on home (square image blocks, name only) */
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 16px;
+  margin: 36px auto;
+}
+.cat-tile {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius);
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  text-decoration: none;
+}
+.cat-tile::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(15,17,21,0.15) 0%, rgba(15,17,21,0.72) 100%);
+  transition: background .2s ease;
+}
+.cat-tile:hover::before {
+  background: linear-gradient(180deg, rgba(224,164,88,0.12) 0%, rgba(15,17,21,0.80) 100%);
+}
+.cat-name {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  text-align: center;
+  padding: 14px 8px;
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+  letter-spacing: .3px;
+}
+
+/* Category page banner + inline material */
+.cat-banner {
+  position: relative;
+  background-size: cover; background-position: center;
+  border-bottom: 1px solid var(--border);
+}
+.cat-banner::before {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(15,17,21,0.55), rgba(15,17,21,0.88));
+}
+.cat-banner .container { position: relative; z-index: 1; padding: 56px 20px 36px; }
+.cat-banner h1 { color: #fff; margin: 0 0 8px; font-size: 2rem; text-shadow: 0 1px 4px rgba(0,0,0,0.6); }
+.cat-article { margin: 32px 0; }
+.cat-article h2 { font-size: 1.5rem; margin: 0 0 6px; }
+.cat-sep { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+
+/* Category blocks on home */
+.block { margin: 44px auto; }
+.block-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 18px;
+}
+.block-head h2 { margin: 0; font-size: 1.4rem; }
+.block-more { color: var(--accent); font-size: .9rem; text-decoration: none; white-space: nowrap; }
+.block-more:hover { color: var(--accent-2); }

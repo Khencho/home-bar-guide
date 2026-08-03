@@ -1,0 +1,45 @@
+backend:
+  name: github
+  repo: Khencho/home-bar-guide
+  branch: main
+  base_url: https://the-forgotten-bartender.pages.dev
+  auth_endpoint: https://the-forgotten-bartender.pages.dev/api/auth
+
+# Папка с изображениями (необязательно, пока не используем)
+media_folder: "public/backgrounds"
+public_folder: "/backgrounds"
+
+publish_mode: editorial_workflow
+
+collections:
+  - name: "blog"
+    label: "Статьи"
+    label_singular: "Статья"
+    folder: "src/content/blog"
+    slug: "{{slug}}"
+    create: true
+    editor:
+      preview: false
+    fields:
+      - { name: title, label: "Заголовок", widget: string }
+      - { name: description, label: "Описание (для поиска/соцсетей)", widget: string }
+      - { name: pubDate, label: "Дата публикации", widget: datetime, format: "YYYY-MM-DD", required: false }
+      - name: tags
+        label: "Теги"
+        widget: list
+        summary: "{{fields.title}}"
+        field: { name: tag, label: "Тег", widget: string }
+      - name: category
+        label: "Категория (блок на сайте)"
+        widget: select
+        options:
+          - { label: "Статьи", value: "Статьи" }
+          - { label: "Коктейли", value: "Коктейли" }
+          - { label: "настойки", value: "настойки" }
+          - { label: "кордиалы", value: "кордиалы" }
+          - { label: "лимонады", value: "лимонады" }
+          - { label: "Алкоголь", value: "Алкоголь" }
+          - { label: "чай", value: "чай" }
+          - { label: "кофе", value: "кофе" }
+      - { name: affiliate, label: "Партнёрские ссылки (монетизация)?", widget: boolean, default: false }
+      - { name: body, label: "Текст статьи", widget: markdown }
