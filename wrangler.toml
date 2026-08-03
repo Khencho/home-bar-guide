@@ -1,3 +1,6 @@
 name = "the-forgotten-bartender"
 compatibility_date = "2025-01-01"
 pages_build_output_dir = "dist"
+
+# Контент хранится в src/lib/seed.ts и коммитится в GitHub (токен GH_TOKEN задан секретом).
+# KV не используется.

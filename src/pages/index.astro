@@ -1,10 +1,12 @@
 ---
-import { getCollection } from 'astro:content';
+import { getAllArticles } from '../lib/store';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE_TITLE, CATEGORIES } from '../consts';
 
-const posts = await getCollection('blog');
-const countByCat = (title) => posts.filter((p) => (p.data.category || 'Статьи') === title).length;
+export const prerender = false;
+
+const posts = await getAllArticles();
+const countByCat = (title: string) => posts.filter((p) => (p.category || 'Статьи') === title).length;
 ---
 
 <BaseLayout title={SITE_TITLE}>

@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE_TITLE } from '../consts';
+import { isAuthed } from '../lib/session';
+
+export const prerender = false;
+
+const authed = await isAuthed(Astro.request, (Astro as any).locals?.runtime?.env);
+if (authed) return Astro.redirect('/admin');
+
+const error = Astro.url.searchParams.get('error');
+---
+
+<BaseLayout title={`Вход — ${SITE_TITLE}`}>
+  <article class="post" style="max-width:420px;margin:40px auto">
+    <h1>Вход в редактор</h1>
+    {error && <p class="aff-note">Неверный логин или пароль.</p>}
+    <form method="post" action="/api/login" class="login-form">
+      <label>Логин<br><input type="text" name="username" required autocomplete="username" /></label>
+      <label>Пароль<br><input type="password" name="password" required autocomplete="current-password" /></label>
+      <button type="submit">Войти</button>
+    </form>
+  </article>
+</BaseLayout>
+
+<style>
+  .login-form { display:flex; flex-direction:column; gap:14px; margin-top:18px; }
+  .login-form label { font-weight:600; }
+  .login-form input { width:100%; padding:10px; margin-top:6px; border:1px solid #3a2f25; border-radius:6px; background:#120e0a; color:#f3e9da; }
+  .login-form button { padding:11px; border:none; border-radius:6px; background:#c9a24b; color:#1a1410; font-weight:700; cursor:pointer; }
+</style>

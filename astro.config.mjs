@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import cloudflare from '@astrojs/cloudflare';
 
 // Превращает каждый H2-раздел статьи в сворачиваемую главу <details>/<summary>
 // Работает на этапе сборки — аккордеон уже в готовом HTML, без клиентского JS.
@@ -34,9 +35,9 @@ function rehypeChapters() {
   };
 }
 
-// Замени на свой реальный домен перед деплоем!
 export default defineConfig({
   site: 'https://the-forgotten-bartender.pages.dev',
+  adapter: cloudflare(),
   integrations: [sitemap()],
   markdown: {
     shikiConfig: {

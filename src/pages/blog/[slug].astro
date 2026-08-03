@@ -1,37 +1,34 @@
 ---
-import { getCollection } from 'astro:content';
+import { marked } from 'marked';
+import { getArticle } from '../../lib/store';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { SITE_TITLE } from '../../consts';
 
-export async function getStaticPaths() {
-  const posts = await getCollection('blog');
-  return posts.map((post) => ({
-    params: { slug: post.slug },
-    props: { post },
-  }));
-}
-const { post } = Astro.props;
-const { Content } = await post.render();
+export const prerender = false;
 
+const { slug } = Astro.params;
+const post = await getArticle(slug);
+if (!post) return Astro.redirect('/');
+
+const html = marked.parse(post.body || '');
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Article',
-  headline: post.data.title,
-  description: post.data.description,
-  datePublished: post.data.pubDate.toISOString(),
+  headline: post.title,
+  description: post.description,
+  datePublished: post.pubDate,
   author: { '@type': 'Organization', name: SITE_TITLE },
   mainEntityOfPage: new URL(Astro.url.pathname, Astro.site).toString(),
 };
 ---
-<BaseLayout title={`${post.data.title} — ${SITE_TITLE}`} description={post.data.description}>
+
+<BaseLayout title={`${post.title} — ${SITE_TITLE}`} description={post.description}>
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   <article class="post">
-    <h1>{post.data.title}</h1>
-    <p class="post-meta">Опубликовано {post.data.pubDate.toISOString().slice(0, 10)}</p>
-    <div class="prose">
-      <Content />
-    </div>
-    {post.data.affiliate && (
+    <h1>{post.title}</h1>
+    <p class="post-meta">Опубликовано {post.pubDate}</p>
+    <div class="prose" set:html={html} />
+    {post.affiliate && (
       <p class="aff-note">В статье могут быть партнёрские ссылки. Мы получаем комиссию, если вы покупаете по ним — для вас цена не меняется.</p>
     )}
   </article>

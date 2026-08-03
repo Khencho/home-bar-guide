@@ -1,27 +1,27 @@
 ---
-import { getCollection } from 'astro:content';
+import { marked } from 'marked';
+import { getAllArticles } from '../../lib/store';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { SITE_TITLE, CATEGORIES } from '../../consts';
 
-export async function getStaticPaths() {
-  return CATEGORIES.map((cat) => ({ params: { cat: cat.slug }, props: { cat } }));
-}
+export const prerender = false;
 
-const { cat } = Astro.props;
-const posts = (await getCollection('blog'))
-  .filter((p) => (p.data.category || 'Статьи') === cat.title)
-  .sort((a, b) => Number(b.data.pinned) - Number(a.data.pinned) || b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const { cat } = Astro.params;
+const current = CATEGORIES.find((c) => c.slug === cat);
+if (!current) return Astro.redirect('/');
 
-const rendered = await Promise.all(
-  posts.map(async (p) => ({ data: p.data, slug: p.slug, Content: (await p.render()).Content }))
-);
+const posts = (await getAllArticles())
+  .filter((p) => (p.category || 'Статьи') === current.title)
+  .sort((a, b) => Number(b.pinned) - Number(a.pinned) || (a.pubDate < b.pubDate ? 1 : -1));
+
+const rendered = posts.map((p) => ({ ...p, html: marked.parse(p.body || '') }));
 ---
 
-<BaseLayout title={`${cat.title} — ${SITE_TITLE}`}>
-  <section class="cat-banner" style={`background-image:url('${cat.image}')`}>
+<BaseLayout title={`${current.title} — ${SITE_TITLE}`}>
+  <section class="cat-banner" style={`background-image:url('${current.image}')`}>
     <div class="container">
-      <h1>{cat.title}</h1>
-      <p class="post-meta">Материалы в разделе «{cat.title}»</p>
+      <h1>{current.title}</h1>
+      <p class="post-meta">Материалы в разделе «{current.title}»</p>
     </div>
   </section>
 
@@ -29,11 +29,11 @@ const rendered = await Promise.all(
     {rendered.length === 0 ? (
       <p>Скоро здесь появятся материалы.</p>
     ) : (
-      rendered.map(({ data, slug, Content }) => (
+      rendered.map(({ title, description, html, slug }) => (
         <article class="cat-article">
-          <h2 id={slug}>{data.title}</h2>
-          {data.description && <p class="post-meta">{data.description}</p>}
-          <Content />
+          <h2 id={slug}>{title}</h2>
+          {description && <p class="post-meta">{description}</p>}
+          <div class="prose" set:html={html} />
           <hr class="cat-sep" />
         </article>
       ))

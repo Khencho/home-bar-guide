@@ -1,0 +1,80 @@
+---
+import { getAllArticles } from '../lib/store';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE_TITLE, CATEGORIES } from '../consts';
+import { isAuthed } from '../lib/session';
+
+export const prerender = false;
+
+const authed = await isAuthed(Astro.request, (Astro as any).locals?.runtime?.env);
+if (!authed) return Astro.redirect('/login');
+
+const posts = await getAllArticles();
+const edit = Astro.url.searchParams.get('edit');
+const draft = edit ? posts.find((p) => p.slug === edit) : null;
+---
+
+<BaseLayout title={`Редактор — ${SITE_TITLE}`}>
+  <div class="admin-wrap">
+    <aside class="admin-list">
+      <h2>Статьи</h2>
+      <a class="admin-new" href="/admin?edit=new">+ Новая статья</a>
+      <ul>
+        {posts.map((p) => (
+          <li><a href={`/admin?edit=${p.slug}`}>{p.title}</a></li>
+        ))}
+      </ul>
+      <a class="admin-logout" href="/api/logout">Выйти</a>
+    </aside>
+
+    <section class="admin-edit">
+      <form method="post" action="/api/article" class="article-form">
+        <input type="hidden" name="originalSlug" value={draft?.slug || ''} />
+        <label>Slug (URL, латиницей, уникален)<br>
+          <input type="text" name="slug" value={draft?.slug || ''} required pattern="[a-z0-9-]+" />
+        </label>
+        <label>Заголовок<br><input type="text" name="title" value={draft?.title || ''} required /></label>
+        <label>Описание<br><input type="text" name="description" value={draft?.description || ''} /></label>
+        <label>Дата (YYYY-MM-DD)<br><input type="text" name="pubDate" value={draft?.pubDate || new Date().toISOString().slice(0,10)} /></label>
+        <label>Теги (через запятую)<br><input type="text" name="tags" value={(draft?.tags || []).join(', ')} /></label>
+        <label>Категория<br>
+          <select name="category">
+            {CATEGORIES.map((c) => (
+              <option value={c.title} selected={draft?.category === c.title}>{c.title}</option>
+            ))}
+          </select>
+        </label>
+        <label>Партнёрские ссылки?
+          <input type="checkbox" name="affiliate" checked={draft?.affiliate} />
+        </label>
+        <label>Текст (Markdown)<br>
+          <textarea name="body" rows="18" required>{draft?.body || ''}</textarea>
+        </label>
+        <div class="admin-actions">
+          <button type="submit" name="action" value="save">Сохранить</button>
+          {draft && <button type="submit" name="action" value="delete" class="danger" formnovalidate>Удалить</button>}
+        </div>
+      </form>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .admin-wrap { display:flex; gap:24px; align-items:flex-start; }
+  .admin-list { width:240px; flex:none; border-right:1px solid #2a211a; padding-right:16px; }
+  .admin-list ul { list-style:none; padding:0; margin:12px 0; }
+  .admin-list li { margin:6px 0; }
+  .admin-list a { color:#e7d3b0; }
+  .admin-new, .admin-logout { display:inline-block; margin:8px 0; font-weight:600; }
+  .admin-edit { flex:1; }
+  .article-form { display:flex; flex-direction:column; gap:12px; max-width:720px; }
+  .article-form label { font-weight:600; display:block; }
+  .article-form input, .article-form select, .article-form textarea {
+    width:100%; padding:9px; margin-top:5px; border:1px solid #3a2f25; border-radius:6px;
+    background:#120e0a; color:#f3e9da; font-family:inherit;
+  }
+  .article-form textarea { font-family:ui-monospace,monospace; }
+  .admin-actions { display:flex; gap:12px; }
+  .admin-actions button { padding:10px 18px; border:none; border-radius:6px; background:#c9a24b; color:#1a1410; font-weight:700; cursor:pointer; }
+  .admin-actions .danger { background:#7a2e2e; color:#f3e9da; }
+</style>
